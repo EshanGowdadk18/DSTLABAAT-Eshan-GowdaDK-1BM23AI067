@@ -1,0 +1,108 @@
+balanced-brackets
+def isBalanced(s):
+    stack = []
+    matching_brackets = {')': '(', ']': '[', '}': '{'}
+
+    for char in s:
+        if char in "({[":
+            stack.append(char)
+        elif char in ")}]":
+            if not stack or stack[-1] != matching_brackets[char]:
+                return "NO"
+            stack.pop()
+    return "YES" if not stack else "NO"
+    
+import sys
+input = sys.stdin.read
+data = input().splitlines()
+
+t = int(data[0]) 
+results = []
+
+for i in range(1, t + 1):
+    results.append(isBalanced(data[i]))  
+print("\n".join(results))
+
+
+queue using two stacks
+class QueueUsingStacks:
+    def _init_(self):
+        self.stack1 = []
+        self.stack2 = []
+
+    def enqueue(self, x):
+        self.stack1.append(x)
+    def dequeue(self):
+        if not self.stack2:
+            while self.stack1:
+                self.stack2.append(self.stack1.pop())
+        return self.stack2.pop() if self.stack2 else None
+    def front(self):
+        if not self.stack2:
+            while self.stack1:
+                self.stack2.append(self.stack1.pop())
+        return self.stack2[-1] if self.stack2 else None
+
+q = int(input())
+queue = QueueUsingStacks()
+
+for _ in range(q):
+    query = input().strip().split()
+    query_type = int(query[0])
+    
+    if query_type == 1:
+        x = int(query[1])
+        queue.enqueue(x)
+    elif query_type == 2:
+        queue.dequeue()
+    elif query_type == 3:
+        print(queue.front())
+
+game of two stacks
+def twoStacks(maxSum, a, b):
+    
+    sum_a = 0
+    count = 0
+    max_count = 0
+
+    
+    prefix_a = [0]
+    for x in a:
+        if prefix_a[-1] + x > maxSum:
+            break
+        prefix_a.append(prefix_a[-1] + x)
+
+    
+    sum_b = 0
+    for i in range(len(b) + 1):
+        
+        if i > 0:
+            sum_b += b[i - 1]
+        if sum_b > maxSum:
+            break
+
+        
+        while prefix_a and prefix_a[-1] + sum_b > maxSum:
+            prefix_a.pop()
+
+       
+        max_count = max(max_count, len(prefix_a) - 1 + i)
+
+    return max_count
+
+
+
+def main():
+    g = int(input().strip())
+    results = []
+    for _ in range(g):
+        n, m, maxSum = map(int, input().strip().split())
+        a = list(map(int, input().strip().split()))
+        b = list(map(int, input().strip().split()))
+        results.append(twoStacks(maxSum, a, b))
+
+    for res in results:
+        print(res)
+
+if __name__ == "__main__":
+    main()
